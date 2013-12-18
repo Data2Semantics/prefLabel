@@ -1,1 +1,1 @@
-function(doc) { emit(doc['@id'], 1) }
+function(doc) { emit(doc['@id'], doc['label']) }
