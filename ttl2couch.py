@@ -1,6 +1,5 @@
-# splitaaaaq - fail
+#!/usr/bin/env python2.7
 
-import itertools
 import sys
 import rdflib
 import couchdbkit
@@ -8,10 +7,9 @@ import restkit
 from couchdbkit.designer import push
 from time import time
 from glob import glob
-dbname = 'r4'
-fnames = glob('./data/split*')
-fname = './data/labels1000.ttl'
-# fname = './dbpedia3.9_labels_en.ttl'
+dbname = 'preflabel'
+# fnames = glob('./data/split*')
+fname = './test/labels1000.ttl'
 fnames = [fname]
 
 rdfslabel = "http://www.w3.org/2000/01/rdf-schema#label"
