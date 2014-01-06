@@ -1,0 +1,5 @@
+[
+{"from": "doc", "to": "A"},
+{"from": "view", "to": "_view/uri"},
+{"from": "uri/*", "to": "_list/lookup/uri/?key=*"}
+]
