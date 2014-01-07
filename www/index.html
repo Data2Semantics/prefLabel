@@ -69,9 +69,10 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script type="text/javascript">
     function getLabel() {
-      var key = encodeURIComponent('"' + document.getElementById('textURI').value + '"');
-      document.location = 'http://127.0.0.1:5984/preflabel/_design/index/_list/lookup/uri?key=' + key;
-      // http://127.0.0.1:5984/preflabel/_design/index/_list/lookup/uri?key=%22http%3A%2F%2Fdbpedia.org%2Fresource%2FA%22
+      var encodedURI = encodeURIComponent(document.getElementById('textURI').value);
+      var endpoint = 'http://127.0.0.1:5984/preflabel/_design/index/_rewrite';
+      document.location = endpoint + '/uri/' + encodedURI;
+      // rewritten to: http://127.0.0.1:5984/preflabel/_design/index/_list/lookup/uri?key=%22http%3A%2F%2Fdbpedia.org%2Fresource%2FA%22
     }
     </script>
   </body>
