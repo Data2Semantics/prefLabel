@@ -1,5 +1,3 @@
 [
-{"from": "doc", "to": "A"},
-{"from": "view", "to": "_view/uri"},
-{"from": "uri/*", "to": "_list/lookup/uri/?key=*"}
+{"from": "uri/:uri", "to": "_list/lookup/uri", "query": {"key": ":uri"}}
 ]
