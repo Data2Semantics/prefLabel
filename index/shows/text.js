@@ -1,1 +1,1 @@
-function(doc, req) { return doc['label'] }
+function(doc, req) { return doc['l'] }
