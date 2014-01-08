@@ -27,7 +27,7 @@ for fname in fnames:
         print "{} Parsing TTL".format(fname)
         g.parse(fname, format='turtle')
         print "{} Preparing docs".format(fname)
-        docs = [{"_id": s[28:], "@id": unicode(s), "label": unicode(o)} for s, p, o in g]
+        docs = [{"@id": unicode(s), "label": unicode(o)} for s, p, o in g]
 
         print "{} Saving docs".format(fname)
         db.save_docs(docs)
