@@ -5,7 +5,7 @@ import json
 
 chunksize = 5000
 rdfslabel = rdflib.namespace.RDFS['label']
-dbname = 'study'
+dbname = 'preflabel'
 
 server = couchdbkit.Server()
 db = server.get_db(dbname)
@@ -29,10 +29,13 @@ updates = (chunk2doc(c) for c in chunks())
 
 fout = open('failed_updates.json', 'w')
 fout.write('[')
+
 for update in updates:
     try:
         db.save_docs(update, all_or_nothing=True)
     except:
         json.dump(update, fout, indent=2)
-fout.write(']')
+        fout.write(',\n')
+
+fout.write('{}]')
 fout.close()
