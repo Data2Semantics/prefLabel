@@ -8,7 +8,7 @@
   <meta name="author" content="Marat Charlaganov">
   <!-- <link rel="shortcut icon" href="../../docs-assets/ico/favicon.png"> -->
 
-  <title>Template for Bootstrap</title>
+  <title>prefLabel.org</title>
 
   <!-- Bootstrap core CSS -->
   <link href="dist/css/bootstrap.css" rel="stylesheet">
@@ -37,7 +37,7 @@
             </div>
             <div class="form-group">
               <label class="radio-inline">
-                <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>html
+                <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>preview
               </label>
               <label class="radio-inline">
                 <input type="radio" name="optionsRadios">text/plain
@@ -70,9 +70,8 @@
     <script type="text/javascript">
     function getLabel() {
       var encodedURI = encodeURIComponent(document.getElementById('textURI').value);
-      var endpoint = 'http://127.0.0.1:5984/preflabel/_design/index/_rewrite';
+      var endpoint = 'http://preflabel.org/api';
       document.location = endpoint + '/label/' + encodedURI;
-      // rewritten to: http://127.0.0.1:5984/preflabel/_design/index/_list/lookup/uri?key=%22http%3A%2F%2Fdbpedia.org%2Fresource%2FA%22
     }
     </script>
   </body>
