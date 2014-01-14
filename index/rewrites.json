@@ -1,5 +1,4 @@
 [
-{"from": "uri/:uri", "to": "_list/lookup/uri", "query": {"key": ":uri"}},
-{"from": "labels", "method": "POST", "to": "_list/lookup/uri"},
-{"from": "label/:uri", "to": "_list/lookup/uri", "query": {"key": ":uri", "limit": 1}}
+{"from": "labels", "method": "POST", "to": "_list/lookup/_all_docs?stale=update_after"},
+{"from": "label/:uri", "to": "_show/text/:uri"}
 ]
