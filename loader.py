@@ -1,9 +1,12 @@
 import fileinput
+import Queue
+import threading
 import rdflib
 import couchdbkit
 import json
 
 chunksize = 5000
+num_writer_threads = 2
 rdfslabel = rdflib.namespace.RDFS['label']
 dbname = 'preflabel'
 
@@ -25,17 +28,31 @@ def chunk2doc(chunk):
     g.parse(data=chunk, format='nt')
     return [{"_id": s, "l": unicode(o)} for s, o in g.subject_objects(predicate=rdfslabel)]
 
-updates = (chunk2doc(c) for c in chunks())
 
+def writer():
+    while True:
+        update = q.get()
+        try:
+            db.save_docs(update, all_or_nothing=True)
+        except:
+            json.dump(update, fout, indent=2)
+            fout.write(',\n')
+        q.task_done()
+
+q = Queue.Queue()
+for i in range(num_writer_threads):
+     t = threading.Thread(target=worker)
+     t.daemon = True
+     t.start()
+
+updates = (chunk2doc(c) for c in chunks())
 fout = open('failed_updates.json', 'w')
 fout.write('[')
 
 for update in updates:
-    try:
-        db.save_docs(update, all_or_nothing=True)
-    except:
-        json.dump(update, fout, indent=2)
-        fout.write(',\n')
+    q.put(update)
+
+q.join()       # block until all tasks are done
 
 fout.write('{}]')
 fout.close()
