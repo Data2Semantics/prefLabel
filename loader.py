@@ -1,19 +1,26 @@
+import itertools
 import fileinput
-import Queue
+import json
+import logging
 import threading
+import Queue
 import rdflib
 import couchdbkit
-import json
 
-chunksize = 5000
-num_writer_threads = 2
+logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.INFO)
+chunksize = 50
+num_worker_threads = 4
+
 rdfslabel = rdflib.namespace.RDFS['label']
-dbname = 'preflabel'
-
+dbname = 'multi'
+q = Queue.Queue(maxsize=2*num_worker_threads)
 server = couchdbkit.Server()
 db = server.get_db(dbname)
 
-def chunks():
+logging.info("Start loading into '{}'".format(dbname))
+logging.debug("Loader params: num_worker_threads={}, chunksize={}".format(num_worker_threads, chunksize))
+
+def nt_fragments():
     chunk = []
     for line in fileinput.input():
         if len(chunk) < chunksize:
@@ -23,36 +30,33 @@ def chunks():
             chunk = []
     yield ''.join(chunk)
 
-def chunk2doc(chunk):
+def jsonify(ntriples):
     g = rdflib.Graph()
-    g.parse(data=chunk, format='nt')
+    g.parse(data=ntriples, format='nt')
     return [{"_id": s, "l": unicode(o)} for s, o in g.subject_objects(predicate=rdfslabel)]
 
-
-def writer():
+def worker():
     while True:
-        update = q.get()
+        fragment, fragment_number = q.get()
         try:
-            db.save_docs(update, all_or_nothing=True)
-        except:
-            json.dump(update, fout, indent=2)
-            fout.write(',\n')
+            db.save_docs(jsonify(fragment), all_or_nothing=True)
+        except Exception, e:
+            logging.error("While processing fragment #{}: {}".format(fragment_number, e))
         q.task_done()
 
-q = Queue.Queue()
-for i in range(num_writer_threads):
-     t = threading.Thread(target=worker)
-     t.daemon = True
-     t.start()
+def start_workers():
+    for i in range(num_worker_threads):
+         t = threading.Thread(target=worker)
+         t.daemon = True
+         t.start()
 
-updates = (chunk2doc(c) for c in chunks())
-fout = open('failed_updates.json', 'w')
-fout.write('[')
+def main():
+    start_workers()
+    count = itertools.count()
+    for fragment in nt_fragments():
+        q.put([fragment, count.next()])
+    q.join()
+    logging.info("Loading complete")
 
-for update in updates:
-    q.put(update)
-
-q.join()       # block until all tasks are done
-
-fout.write('{}]')
-fout.close()
+if __name__ == '__main__':
+    main()
