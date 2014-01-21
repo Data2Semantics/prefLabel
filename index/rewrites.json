@@ -1,4 +1,4 @@
 [
-{"from": "labels", "method": "POST", "to": "_list/lookup/_all_docs?stale=update_after"},
+{"from": "labels", "method": "POST", "to": "_list/lookup/_all_docs"},
 {"from": "label/:uri", "to": "_show/label/:uri"}
 ]
