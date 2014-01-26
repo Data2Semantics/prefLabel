@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html ng-app lang="en">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,6 +10,7 @@
 
   <title>prefLabel.org</title>
 
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js"></script>
   <!-- Bootstrap core CSS -->
   <link href="dist/css/bootstrap.css" rel="stylesheet">
 
@@ -28,28 +29,48 @@
       <!-- Wrap all page content here -->
       <div id="wrap">
         <div class="container">
-          <form role="form">
-            <div class="input-group">
-              <input type="text" class="form-control" id="textURI" placeholder="http://wikidata.org/entity/Q42" required autofocus>
-              <span class="input-group-btn">
-                <button class="btn btn-primary" type="button" onclick="getLabel()">Get Label</button>
-              </span>
+          <div ng-controller="LabelCtrl">
+            <div class="row clearfix">
+              <div class="col-md-12 column">
+                <div class="page-header">
+                  <h1>
+                    prefLabel.org <span>Labels labels</span>
+                  </h1>
+                </div>
+
+                <form role="form">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="textURI" ng-model="textURI" placeholder="http://www.wikidata.org/entity/Q42" autofocus>
+                    <span class="input-group-btn">
+                      <button class="btn btn-primary" type="button" ng-click="getLabel()">Get Label</button>
+                    </span>
+                  </div>
+                  <div class="form-group">
+                    <label class="radio-inline">
+                      <input type="radio" name="optionsRadios" id="optionsRadios1" value="preview" checked>application/json
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" name="optionsRadios">text/plain
+                    </label>
+                  </div>
+                </form>
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">
+                      Request
+                    </h3>
+                  </div>
+                  <div class="panel-body">
+                    <strong>GET</strong> http://preflabel.org/api/label/{{encodedURI()}}
+                    <div>
+                      Accept: application/json
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="form-group">
-              <label class="radio-inline">
-                <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>preview
-              </label>
-              <label class="radio-inline">
-                <input type="radio" name="optionsRadios">text/plain
-              </label>
-              <label class="radio-inline">
-                <input type="radio" name="optionsRadios">application/json
-              </label>
-              <label class="radio-inline">
-                <input type="radio" name="optionsRadios">application/rdf+xml
-              </label>
-            </div>
-          </form>
+          </div> <!-- /LabelCtrlr -->
+
         </div> <!-- /container -->
       </div> <!-- /wrap -->
 
@@ -68,11 +89,30 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script type="text/javascript">
-    function getLabel() {
-      var encodedURI = encodeURIComponent(document.getElementById('textURI').value);
-      var endpoint = 'http://preflabel.org/api';
-      document.location = endpoint + '/label/' + encodedURI;
-    }
+      // function getLabel() {
+      //   var endpoint = 'http://preflabel.org/api';
+      //   var encodedURI = encodeURIComponent(document.getElementById('textURI').value);
+      //   var preview_text = document.getElementById("preview_id");
+      //   preview_text.value = endpoint + '/label/' + encodedURI + '?format=text';
+      // }
+    </script>
+    <script type="text/javascript">
+      function LabelCtrl($scope, $http) {
+        $scope.encodedURI = function() {
+          if ($scope.textURI) {
+            return encodeURIComponent($scope.textURI);
+          }
+        };
+        $scope.getLabel = function() {
+          $http.get('http://preflabel.org/api/label/' + $scope.encodedURI()).
+          success(function (data) {
+            $scope.labelResponse = JSON.stringify(data);
+          }).
+          error(function (data, status, headers, config) {
+            $scope.labelResponse = status + ': ' + JSON.stringify(data);
+          });
+        };
+      }
     </script>
   </body>
   </html>
