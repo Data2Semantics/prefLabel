@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="">
+  <meta name="description" content="Fast RDF entity label lookup">
   <meta name="author" content="Marat Charlaganov">
   <!-- <link rel="shortcut icon" href="../../docs-assets/ico/favicon.png"> -->
 
@@ -18,101 +18,115 @@
   <link href="preflabel.css" rel="stylesheet">
 
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-      <![endif]-->
-    </head>
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+  <![endif]-->
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    <body>
-
-      <!-- Wrap all page content here -->
-      <div id="wrap">
-        <div class="container">
-          <div ng-controller="LabelCtrl">
-            <div class="row clearfix">
-              <div class="col-md-12 column">
-                <div class="page-header">
-                  <h1>
-                    prefLabel.org <span>Labels labels</span>
-                  </h1>
-                </div>
-
-                <form role="form">
-                  <div class="input-group">
-                    <input type="text" class="form-control" id="textURI" ng-model="textURI" placeholder="http://www.wikidata.org/entity/Q42" autofocus>
-                    <span class="input-group-btn">
-                      <button class="btn btn-primary" type="button" ng-click="getLabel()">Get Label</button>
-                    </span>
-                  </div>
-                  <div class="form-group">
-                    <label class="radio-inline">
-                      <input type="radio" name="optionsRadios" id="optionsRadios1" value="preview" checked>application/json
-                    </label>
-                    <label class="radio-inline">
-                      <input type="radio" name="optionsRadios">text/plain
-                    </label>
-                  </div>
-                </form>
-                <div class="panel panel-info">
-                  <div class="panel-heading">
-                    <h3 class="panel-title">
-                      Request
-                    </h3>
-                  </div>
-                  <div class="panel-body">
-                    <strong>GET</strong> http://preflabel.org/api/label/{{encodedURI()}}
-                    <div>
-                      Accept: application/json
-                    </div>
-                  </div>
+    ga('create', 'UA-47338197-1', 'preflabel.org');
+    ga('send', 'pageview');
+  </script>
+</head>
+<body>
+  <!-- Wrap all page content here -->
+  <div id="wrap">
+    <div class="container">
+      <div ng-controller="LabelCtrl">
+        <div class="row clearfix">
+          <div class="col-md-12 column">
+            <div class="page-header">
+              <h1>
+                prefLabel <small>Fast RDF entity label lookup</small>
+              </h1>
+            </div>
+            <h4 class="text-muted">Example</h4>
+            <div class="input-group">
+              <input type="text" class="form-control" id="textURI" ng-model="textURI" placeholder="http://www.wikidata.org/entity/Q42" autofocus>
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="button" ng-click="getLabel()">Get Label</button>
+              </span>
+            </div>
+            <div class="form-group">
+              <label class="radio-inline">
+                <input type="radio" name="acceptRadio" ng-model="acceptHeader" value="application/json" checked>JSON
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="acceptRadio" ng-model="acceptHeader" value="text/plain">Text
+              </label>
+            </div>
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  Request
+                </h3>
+              </div>
+              <div class="panel-body">
+                <strong>GET</strong> http://preflabel.org/api/label/{{encodedURI()}}
+                <div>
+                  <em>Accept:</em> {{acceptHeader}}
                 </div>
               </div>
             </div>
-          </div> <!-- /LabelCtrlr -->
 
-        </div> <!-- /container -->
-      </div> <!-- /wrap -->
-
-      <div id="footer">
-        <div class="container">
-          <div class="pull-right">
-            <a href="#">About</a>
-            <!-- <p class="text-muted">About. Place sticky footer content here.</p> -->
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  Response {{responseStatus}}
+                </h3>
+              </div>
+              <div class="panel-body">
+                <div>
+                  <strong>Headers:</strong> {{responseHeaders}}
+                </div>
+                <div>
+                  <strong>Data:</strong> {{responseData}}
+                </div>
+              </div>
+            </div>
 
           </div>
         </div>
+      </div> <!-- /LabelCtrlr -->
+
+    </div> <!-- /container -->
+  </div> <!-- /wrap -->
+
+  <div id="footer">
+    <div class="container">
+      <div class="pull-right">
+        <!-- <p class="text-muted">About. Place sticky footer content here.</p> -->
       </div>
+    </div>
+  </div>
 
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script type="text/javascript">
-      // function getLabel() {
-      //   var endpoint = 'http://preflabel.org/api';
-      //   var encodedURI = encodeURIComponent(document.getElementById('textURI').value);
-      //   var preview_text = document.getElementById("preview_id");
-      //   preview_text.value = endpoint + '/label/' + encodedURI + '?format=text';
-      // }
-    </script>
-    <script type="text/javascript">
-      function LabelCtrl($scope, $http) {
-        $scope.encodedURI = function() {
-          if ($scope.textURI) {
-            return encodeURIComponent($scope.textURI);
-          }
-        };
-        $scope.getLabel = function() {
-          $http.get('http://preflabel.org/api/label/' + $scope.encodedURI()).
-          success(function (data) {
-            $scope.labelResponse = JSON.stringify(data);
-          }).
-          error(function (data, status, headers, config) {
-            $scope.labelResponse = status + ': ' + JSON.stringify(data);
-          });
-        };
-      }
-    </script>
-  </body>
-  </html>
+  <script type="text/javascript">
+    function LabelCtrl($scope, $http) {
+      $scope.encodedURI = function() {
+        if ($scope.textURI) {
+          return encodeURIComponent($scope.textURI);
+        }
+      };
+      $scope.getLabel = function() {
+        $http.get('http://preflabel.org/api/label/' + $scope.encodedURI(),
+          {"headers": {"Accept": $scope.acceptHeader}}).
+        success(function (data, status, headers, config) {
+          $scope.responseStatus = ' - ' + status;
+          $scope.responseHeaders = headers();
+          $scope.responseData = data;
+        }).
+        error(function (data, status, headers, config) {
+          $scope.responseStatus = ' - ' + status;
+          $scope.responseHeaders = headers();
+          $scope.responseData = data;
+        });
+      };
+      $scope.acceptHeader = "application/json";
+    }
+  </script>
+</body>
+</html>
