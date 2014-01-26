@@ -81,10 +81,10 @@
               </div>
               <div class="panel-body">
                 <div>
-                  <strong>Headers:</strong> {{responseHeaders}}
+                  <em>Content-Type:</em> {{responseContentType}}
                 </div>
                 <div>
-                  <strong>Data:</strong> {{responseData}}
+                  <em>Data:</em> <strong>{{responseData}}</strong>
                 </div>
               </div>
             </div>
@@ -116,12 +116,12 @@
           {"headers": {"Accept": $scope.acceptHeader}}).
         success(function (data, status, headers, config) {
           $scope.responseStatus = ' - ' + status;
-          $scope.responseHeaders = headers();
+          $scope.responseContentType = headers()['content-type'];
           $scope.responseData = data;
         }).
         error(function (data, status, headers, config) {
           $scope.responseStatus = ' - ' + status;
-          $scope.responseHeaders = headers();
+          $scope.responseContentType = headers()['content-type'];
           $scope.responseData = data;
         });
       };
