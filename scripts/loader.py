@@ -12,7 +12,7 @@ chunksize = 5000
 num_worker_threads = 4
 
 rdfslabel = rdflib.namespace.RDFS['label']
-dbname = 'multi'
+dbname = 'preflabel'
 q = Queue.Queue(maxsize=2*num_worker_threads)
 server = couchdbkit.Server()
 db = server.get_db(dbname)
