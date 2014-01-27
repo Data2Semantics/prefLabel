@@ -46,7 +46,7 @@
             </div>
             <h4 class="text-muted">Example</h4>
             <div class="input-group">
-              <input type="text" class="form-control" id="textURI" ng-model="textURI" placeholder="http://www.wikidata.org/entity/Q42" autofocus>
+              <input type="text" class="form-control" id="textURI" ng-model="textURI" ng-attr-placeholder="{{exampleURI}}" autofocus>
               <span class="input-group-btn">
                 <button class="btn btn-primary" type="button" ng-click="getLabel()">Get Label</button>
               </span>
@@ -115,6 +115,9 @@
         }
       };
       $scope.getLabel = function() {
+        if (!$scope.textURI) {
+          $scope.textURI = $scope.exampleURI;
+        };
         $http.get('http://preflabel.org/api/label/' + $scope.encodedURI(),
           {'headers': {'Accept': $scope.acceptHeader, 'Etag': ''}}).
         success(function (data, status, headers, config) {
@@ -129,6 +132,7 @@
         });
       };
       $scope.acceptHeader = "application/json";
+      $scope.exampleURI = "http://www.wikidata.org/entity/P103";
     }
   </script>
 </body>
