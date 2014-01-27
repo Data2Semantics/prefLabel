@@ -10,12 +10,12 @@
 
   <title>prefLabel.org</title>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js"></script>
+  <script src="./js/angular.min.js"></script>
   <!-- Bootstrap core CSS -->
-  <link href="dist/css/bootstrap.css" rel="stylesheet">
+  <link href="./css/bootstrap.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
-  <link href="preflabel.css" rel="stylesheet">
+  <link href="./css/style.css" rel="stylesheet">
 
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
@@ -113,19 +113,21 @@
       };
       $scope.getLabel = function() {
         $http.get('http://preflabel.org/api/label/' + $scope.encodedURI(),
-          {"headers": {"Accept": $scope.acceptHeader}}).
+          {'headers': {'Accept': $scope.acceptHeader, 'Etag': ''}}).
         success(function (data, status, headers, config) {
           $scope.responseStatus = ' - ' + status;
           $scope.responseContentType = headers()['content-type'];
           $scope.responseData = data;
+          console.log('success ' + $scope.acceptHeader + JSON.stringify(config));
         }).
         error(function (data, status, headers, config) {
           $scope.responseStatus = ' - ' + status;
           $scope.responseContentType = headers()['content-type'];
           $scope.responseData = data;
+          console.log('error');
         });
       };
-      $scope.acceptHeader = "application/json";
+      // $scope.acceptHeader = "application/json";
     }
   </script>
 </body>
