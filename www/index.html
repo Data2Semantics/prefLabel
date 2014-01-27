@@ -118,16 +118,14 @@
           $scope.responseStatus = ' - ' + status;
           $scope.responseContentType = headers()['content-type'];
           $scope.responseData = data;
-          console.log('success ' + $scope.acceptHeader + JSON.stringify(config));
         }).
         error(function (data, status, headers, config) {
           $scope.responseStatus = ' - ' + status;
           $scope.responseContentType = headers()['content-type'];
           $scope.responseData = data;
-          console.log('error');
         });
       };
-      // $scope.acceptHeader = "application/json";
+      $scope.acceptHeader = "application/json";
     }
   </script>
 </body>
