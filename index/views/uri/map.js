@@ -1,1 +1,0 @@
-function(doc) { emit(doc['@id'], 1) }

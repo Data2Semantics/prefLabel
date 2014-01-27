@@ -1,0 +1,4 @@
+[
+{"from": "labels", "method": "POST", "to": "_list/lookup/_all_docs"},
+{"from": "label/:uri", "to": "_show/label/:uri"}
+]

@@ -1,1 +1,1 @@
-function(doc, req) { return {'json': {'label': doc['label']}} }
+function(doc, req) { return {'json': {'label': doc['l']}} }
