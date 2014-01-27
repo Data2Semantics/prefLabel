@@ -8,4 +8,11 @@ function(head, req) {
     }
     return(toJSON(response));
   });
+  provides('text', function(){
+    var results = '';
+    while(row = getRow()){
+      results += row.value + '\n'
+    }
+    return(results);
+  });
 }
