@@ -8,7 +8,7 @@ import rdflib
 import couchdbkit
 
 logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.INFO)
-chunksize = 50
+chunksize = 5000
 num_worker_threads = 4
 
 rdfslabel = rdflib.namespace.RDFS['label']
