@@ -1,6 +1,18 @@
 function(doc, req){
-  provides('json', function(){
-     return toJSON({'label': doc['l']})});
-  provides('text', function(){
-     return doc['l'] });
+  var headers = {};
+  if (doc) {
+    if (req.headers["Accept"].match(/json/)) {
+      return {body: JSON.stringify({'label': doc['l']}),
+              headers: {"Content-Type": "application/json"}};
+    } else {
+      return {body: doc['l'],
+              headers: {"Content-Type": "text/plain"}};
+    }
+  } else {
+    return {
+      body: JSON.stringify( {"error": "not_found", "reason": "no data for <" + req.id + ">"}),
+      headers: {"Content-Type": "application/json"},
+      code : 404
+    };
+  };
 }
