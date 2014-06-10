@@ -1,3 +1,5 @@
+#!/usr/bin/env python2.7
+
 import itertools
 import fileinput
 import json
@@ -33,7 +35,9 @@ def nt_fragments():
 def jsonify(ntriples):
     g = rdflib.Graph()
     g.parse(data=ntriples, format='nt')
-    return [{"_id": s, "l": unicode(o)} for s, o in g.subject_objects(predicate=rdfslabel)]
+    
+    return [{"_id": s, (o.language or 'en') : unicode(o)} 
+                for s, o in g.subject_objects(predicate=rdfslabel)]
 
 def worker():
     while True:
