@@ -2,10 +2,10 @@ function(doc, req){
   var headers = {};
   if (doc) {
     if (req.headers["Accept"].match(/json/)) {
-      return {body: JSON.stringify({'label': doc['l']}),
+      return {body: JSON.stringify({'label': doc['en']}),
               headers: {"Content-Type": "application/json"}};
     } else {
-      return {body: doc['l'],
+      return {body: doc['en'],
               headers: {"Content-Type": "text/plain"}};
     }
   } else {

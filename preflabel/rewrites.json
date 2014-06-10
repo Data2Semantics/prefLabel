@@ -1,4 +1,8 @@
 [
-{"from": "labels", "method": "POST", "to": "_list/lookup/_all_docs"},
-{"from": "label/:uri", "to": "_show/label/:uri"}
+{"from": "api/v1/labels", "method": "POST", "to": "_list/lookup/_all_docs"},
+{"from": "api/v1/label/:uri", "to": "_show/label/:uri"},
+{"from": "css/*", "to": "css/*"},
+{"from": "img/*", "to": "img/*"},
+{"from": "", "to": "index.html"},
+{"from": "robots.txt", "to": "robots.txt"}
 ]
