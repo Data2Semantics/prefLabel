@@ -1,5 +1,7 @@
 #!/usr/bin/env python2.7
 
+import datetime
+import sys
 import itertools
 import fileinput
 import json
@@ -57,9 +59,15 @@ def start_workers():
 def main():
     start_workers()
     count = itertools.count()
+    time_started = rdflib.Literal(datetime.datetime.utcnow())
+    command_line = sys.argv[0]
+    logging.info("Start time: {}".format(time_started))
+    logging.info("Command line: {}".format(command_line))
     for fragment in nt_fragments():
         q.put([fragment, count.next()])
     q.join()
+    time_ended = rdflib.Literal(datetime.datetime.utcnow())
+    logging.info("End time: {}".format(time_ended))
     logging.info("Loading complete")
 
 if __name__ == '__main__':
