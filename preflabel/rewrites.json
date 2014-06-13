@@ -1,8 +1,10 @@
 [
 {"from": "api/v1/labels", "method": "POST", "to": "_list/lookup/_all_docs"},
 {"from": "api/v1/label/:uri", "to": "_show/label/:uri"},
+{"from": "ld/prov/*", "to": "_show/prov/prov/*"},
 {"from": "css/*", "to": "css/*"},
 {"from": "img/*", "to": "img/*"},
 {"from": "", "to": "index.html"},
-{"from": "robots.txt", "to": "robots.txt"}
+{"from": "robots.txt", "to": "robots.txt"},
+{"from": "api/*", "to": "api/v1/*"}
 ]
