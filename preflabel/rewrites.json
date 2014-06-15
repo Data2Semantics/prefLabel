@@ -1,5 +1,5 @@
 [
-{"from": "api/v1/labels", "method": "POST", "to": "_list/lookup/_all_docs"},
+{"from": "api/v1/labels", "method": "POST", "to": "_list/labels/_all_docs", "query": { "include_docs": "true", "limit":"1000" }},
 {"from": "api/v1/label/:uri", "to": "_show/label/:uri"},
 {"from": "ld/prov/*", "to": "_show/prov/prov/*"},
 {"from": "css/*", "to": "css/*"},
