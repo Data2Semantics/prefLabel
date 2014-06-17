@@ -12,34 +12,47 @@ import rdflib
 import couchdbkit
 
 logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.INFO)
-chunksize = 5000
+min_chunk_size = 5000
 num_worker_threads = 4
 
+DEFAULT_LANGUAGE = 'en'
 rdfslabel = rdflib.namespace.RDFS['label']
 dbname = 'preflabel'
 q = Queue.Queue(maxsize=2*num_worker_threads)
 server = couchdbkit.Server()
 db = server.get_db(dbname)
 
-logging.info("Start loading into '{}'".format(dbname))
-logging.debug("Loader params: num_worker_threads={}, chunksize={}".format(num_worker_threads, chunksize))
+def nt_subj(nt_line):
+    tokens = nt_line.split()
+    if (len(tokens) > 2) and (tokens[0][0] == '<'):
+        return tokens[0]
+    else:
+        return None
 
-def nt_fragments():
+def nt_fragments(input_lines=fileinput.input()):
     chunk = []
-    for line in fileinput.input():
-        if len(chunk) < chunksize:
-            chunk.append(line)
-        else:
-            yield ''.join(chunk)
-            chunk = []
-    yield ''.join(chunk)
+    last_subj = None
+    for line in input_lines:
+        if last_subj:
+            if nt_subj(line) != last_subj:
+                yield (''.join(chunk)).strip()
+                chunk = []
+                last_subj = None
+        elif len(chunk) > min_chunk_size - 2:
+            last_subj = nt_subj(line)
+        chunk.append(line)
+    yield (''.join(chunk)).strip()
 
 def jsonify(ntriples):
     g = rdflib.Graph()
     g.parse(data=ntriples, format='nt')
-    
-    return [{"_id": s, (o.language or 'en') : unicode(o)} 
-                for s, o in g.subject_objects(predicate=rdfslabel)]
+    docs = []
+    for s in g.subjects():
+        doc = {"_id": s}
+        for o in g.objects(subject=s, predicate=rdfslabel):
+            doc[o.language or DEFAULT_LANGUAGE] = unicode(o)
+        docs.append(doc)
+    return docs
 
 def worker():
     while True:
@@ -57,6 +70,8 @@ def start_workers():
          t.start()
 
 def main():
+    logging.info("Start loading into '{}'".format(dbname))
+    logging.debug("Loader params: num_worker_threads={}, min_chunk_size={}".format(num_worker_threads, min_chunk_size))
     start_workers()
     count = itertools.count()
     time_started = rdflib.Literal(datetime.datetime.utcnow())
