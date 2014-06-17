@@ -47,7 +47,7 @@ def jsonify(ntriples):
     g = rdflib.Graph()
     g.parse(data=ntriples, format='nt')
     docs = []
-    for s in g.subjects():
+    for s in set(g.subjects(predicate=rdfslabel)):
         doc = {"_id": s}
         for o in g.objects(subject=s, predicate=rdfslabel):
             doc[o.language or DEFAULT_LANGUAGE] = unicode(o)
