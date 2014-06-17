@@ -1,0 +1,32 @@
+{
+   "_id": "prov/example",
+   "json-ld": {
+       "@context": {
+           "prov": "http://www.w3.org/ns/prov#",
+           "xsd": "http://www.w3.org/2001/XMLSchema#"
+       },
+       "prov:hadPrimarySource": {
+           "@id": "http://downloads.dbpedia.org/3.9/en/labels_en.nt.bz2"
+       },
+       "prov:wasGeneratedBy": {
+           "@type": "prov:Activity",
+           "prov:endedAtTime": {
+               "@type": "xsd:dateTime",
+               "@value": "2014-06-09T20:00Z"
+           },
+           "prov:startedAtTime": {
+               "@type": "xsd:dateTime",
+               "@value": "2014-06-09T21:00Z"
+           },
+           "prov:used": {
+               "@id": "http://downloads.dbpedia.org/3.9/en/labels_en.nt.bz2"
+           },
+           "prov:wasAssotiatedWith": {
+               "@type": "prov:SoftwareAgent",
+               "prov:hadPlan": {
+                   "@id": "https://raw.githubusercontent.com/cmarat/prefLabel/7781fca2ef841a7de80ed1da71325f068e0794d1/scripts/load_dbpedia.sh"
+               }
+           }
+       }
+   }
+}

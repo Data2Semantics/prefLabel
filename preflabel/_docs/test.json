@@ -1,0 +1,6 @@
+{
+   "_id": "http://example.com/test",
+   "en": "one two three",
+   "ru": "раз два три",
+   "prov": "http://localhost:5984/preflabel/_design/preflabel/_rewrite/ld/prov/example"
+}
