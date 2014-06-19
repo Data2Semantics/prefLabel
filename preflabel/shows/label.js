@@ -20,11 +20,15 @@ function(doc, req){
                 'Link' : prov
               }};
     }
-  } else {
-    return {
-      body: JSON.stringify( {'error': 'not_found', 'reason': 'no data for <' + req.id + '>'}),
-      headers: {'Content-Type': 'application/json'},
-      code : 404
-    };
+  } 
+
+  if (req.query.silent) {
+    return {code: 204};
+  }
+
+  return {
+    body: JSON.stringify( {'error': 'not_found', 'reason': 'no data for <' + req.id + '>'}),
+    headers: {'Content-Type': 'application/json'},
+    code : 404
   };
 }
