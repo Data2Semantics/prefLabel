@@ -1,0 +1,11 @@
+[
+{"from": "api/v1/labels", "method": "POST", "to": "_list/labels/_all_docs", "query": { "include_docs": "true", "limit":"1000" }},
+{"from": "api/v1/label/:uri", "to": "_show/label/:uri"},
+{"from": "api/v1/lookup/:lang/:label", "to": "_view/lookup", "query": {"key": [":lang", ":label"]}},
+{"from": "api/*", "to": "api/v1/*"},
+{"from": "ld/prov/*", "to": "_show/prov/prov/*"},
+{"from": "css/*", "to": "css/*"},
+{"from": "img/*", "to": "img/*"},
+{"from": "", "to": "index.html"},
+{"from": "robots.txt", "to": "robots.txt"}
+]

@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Cache-control" content="public">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Fast RDF entity label lookup">
   <meta name="author" content="Marat Charlaganov">
@@ -10,12 +11,14 @@
 
   <title>prefLabel.org</title>
 
+  <!--script src="./js/angular.min.js"></script-->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js"></script>
+  
   <!-- Bootstrap core CSS -->
-  <link href="dist/css/bootstrap.css" rel="stylesheet">
-
+  <!--link href="./css/bootstrap.css" rel="stylesheet"-->
+  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
   <!-- Custom styles for this template -->
-  <link href="preflabel.css" rel="stylesheet">
+  <link href="./css/style.css" rel="stylesheet">
 
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
@@ -46,7 +49,7 @@
             </div>
             <h4 class="text-muted">Example</h4>
             <div class="input-group">
-              <input type="text" class="form-control" id="textURI" ng-model="textURI" placeholder="http://www.wikidata.org/entity/Q42" autofocus>
+              <input type="text" class="form-control" id="textURI" ng-model="textURI" ng-attr-placeholder="{{exampleURI}}" autofocus>
               <span class="input-group-btn">
                 <button class="btn btn-primary" type="button" ng-click="getLabel()">Get Label</button>
               </span>
@@ -66,7 +69,7 @@
                 </h3>
               </div>
               <div class="panel-body">
-                <strong>GET</strong> http://preflabel.org/api/label/{{encodedURI()}}
+                <strong>GET</strong> http://preflabel.org/api/v1/label/{{encodedURI()}}
                 <div>
                   <em>Accept:</em> {{acceptHeader}}
                 </div>
@@ -99,6 +102,9 @@
   <div id="footer">
     <div class="container">
       <div class="pull-right">
+        <a href="http://www.data2semantics.org/">
+          <img src="./img/data2semantics-small.png" alt="Developed by Data2Semantics">
+        </a>
         <!-- <p class="text-muted">About. Place sticky footer content here.</p> -->
       </div>
     </div>
@@ -106,14 +112,20 @@
 
   <script type="text/javascript">
     function LabelCtrl($scope, $http) {
+      $scope.acceptHeader = "application/json";
+      $scope.exampleURI = "http://www.wikidata.org/entity/P103";
       $scope.encodedURI = function() {
         if ($scope.textURI) {
           return encodeURIComponent($scope.textURI);
         }
       };
       $scope.getLabel = function() {
-        $http.get('http://preflabel.org/api/label/' + $scope.encodedURI(),
-          {"headers": {"Accept": $scope.acceptHeader}}).
+        if (!$scope.textURI) {
+          $scope.textURI = $scope.exampleURI;
+        };
+        $http.get('./api/v1/label/' + $scope.encodedURI(),
+        // $http.get('http://localhost:8000/api/label/' + $scope.encodedURI(),
+          {'headers': {'Accept': $scope.acceptHeader}}).
         success(function (data, status, headers, config) {
           $scope.responseStatus = ' - ' + status;
           $scope.responseContentType = headers()['content-type'];
@@ -125,7 +137,6 @@
           $scope.responseData = data;
         });
       };
-      $scope.acceptHeader = "application/json";
     }
   </script>
 </body>
