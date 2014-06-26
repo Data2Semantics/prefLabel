@@ -16,7 +16,8 @@ min_chunk_size = 5000
 num_worker_threads = 4
 
 DEFAULT_LANGUAGE = 'en'
-rdfslabel = rdflib.namespace.RDFS['label']
+rdfs_label = rdflib.namespace.RDFS['label']
+owl_sameAs = rdflib.namespace.OWL['sameAs']
 dbname = 'preflabel'
 q = Queue.Queue(maxsize=2*num_worker_threads)
 server = couchdbkit.Server()
@@ -47,11 +48,16 @@ def jsonify(ntriples):
     g = rdflib.Graph()
     g.parse(data=ntriples, format='nt')
     docs = []
-    for s in set(g.subjects(predicate=rdfslabel)):
+    for s in set(g.subjects()):
         doc = {"_id": s}
-        for o in g.objects(subject=s, predicate=rdfslabel):
-            doc[o.language or DEFAULT_LANGUAGE] = unicode(o)
-        docs.append(doc)
+        labels = { o.language or DEFAULT_LANGUAGE: unicode(o)
+                    for o in g.objects(subject=s, predicate=rdfs_label) }
+        if labels:
+            doc["labels"] = labels
+            sameAs = list(g.objects(subject=s, predicate=owl_sameAs))
+            if sameAs:
+                doc["sameAs"] = sameAs
+            docs.append(doc)
     return docs
 
 def worker():
@@ -65,9 +71,9 @@ def worker():
 
 def start_workers():
     for i in range(num_worker_threads):
-         t = threading.Thread(target=worker)
-         t.daemon = True
-         t.start()
+        t = threading.Thread(target=worker)
+        t.daemon = True
+        t.start()
 
 def main():
     logging.info("Start loading into '{}'".format(dbname))

@@ -39,7 +39,7 @@ function(head, req) {
         'Link': provLink }});
       send(JSON.stringify({
         'label': result.label,
-        'language': result.lang }));
+        'lang': result.lang }));
     } else {
       start({'headers': { 'Content-Type': 'text/plain',
                           'Content-Language': result.lang,
