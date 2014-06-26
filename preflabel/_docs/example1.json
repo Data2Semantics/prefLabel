@@ -5,7 +5,7 @@
     "en": "_ test"
   },
   "prov": "0-example",
-  "sameas": [
+  "sameAs": [
     "http://www.example.com/1",
     "http://www.example.com/2"
   ]
