@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html ng-app lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>prefLabel.org</title>
+</head>
+<body>
+
+  GET /api/v1/label/http%3A%2F%2Fwww.example.com%2F1
+  <div id="label"></div>
+
+  <script type="text/javascript">
+    function httpGet(theUrl) {
+        var xmlHttp = null;
+
+        xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", theUrl, false );
+        xmlHttp.send( null );
+        return xmlHttp.responseText;
+    };
+    document.getElementById("label").innerHTML = httpGet('../_rewrite/api/v1/label/http%3A%2F%2Fwww.example.com%2F1');
+  </script>
+</body>
+</html>
