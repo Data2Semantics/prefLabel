@@ -2,26 +2,23 @@
 
 import datetime
 import sys
-import itertools
+import optparse
 import fileinput
 import json
 import logging
 import threading
 import Queue
-import rdflib
 import couchdbkit
+import rdflib
+from rdflib.namespace import RDFS, OWL
 
-logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.INFO)
 min_chunk_size = 5000
-num_worker_threads = 4
-
+DEFAULT_DB = 'http://localhost:5984/preflabel'
+DEFAULT_WORKER_THREADS = 4
 DEFAULT_LANGUAGE = 'en'
-rdfs_label = rdflib.namespace.RDFS['label']
-owl_sameAs = rdflib.namespace.OWL['sameAs']
-dbname = 'preflabel'
-q = Queue.Queue(maxsize=2*num_worker_threads)
-server = couchdbkit.Server()
-db = server.get_db(dbname)
+prov_url = ''
+db = None
+q = None
 
 def nt_subj(nt_line):
     tokens = nt_line.split()
@@ -51,10 +48,11 @@ def jsonify(ntriples):
     for s in set(g.subjects()):
         doc = {"_id": s}
         labels = { o.language or DEFAULT_LANGUAGE: unicode(o)
-                    for o in g.objects(subject=s, predicate=rdfs_label) }
+                    for o in g.objects(subject=s, predicate=RDFS['label']) }
         if labels:
             doc["labels"] = labels
-            sameAs = list(g.objects(subject=s, predicate=owl_sameAs))
+            doc["prov"] = prov_url
+            sameAs = list(g.objects(subject=s, predicate=OWL['sameAs']))
             if sameAs:
                 doc["sameAs"] = sameAs
             docs.append(doc)
@@ -69,24 +67,45 @@ def worker():
             logging.error("While processing fragment #{}: {}".format(fragment_number, e))
         q.task_done()
 
-def start_workers():
+def start_workers(num_worker_threads):
     for i in range(num_worker_threads):
         t = threading.Thread(target=worker)
         t.daemon = True
         t.start()
 
-def main():
-    logging.info("Start loading into '{}'".format(dbname))
-    logging.debug("Loader params: num_worker_threads={}, min_chunk_size={}".format(num_worker_threads, min_chunk_size))
-    start_workers()
-    count = itertools.count()
-    time_started = rdflib.Literal(datetime.datetime.utcnow())
-    command_line = sys.argv[0]
-    logging.info("Start time: {}".format(time_started))
-    logging.info("Command line: {}".format(command_line))
-    for fragment in nt_fragments():
-        q.put([fragment, count.next()])
+def load_nt(files, num_worker_threads=DEFAULT_WORKER_THREADS):
+    global q
+    q = Queue.Queue(maxsize=2*num_worker_threads)
+    logging.debug("Loader params: num_worker_threads={}, min_chunk_size={}".format(
+        num_worker_threads, min_chunk_size))
+    start_workers(num_worker_threads)
+    for fragment_number, fragment in enumerate(nt_fragments(fileinput.input(files))):
+        q.put([fragment, fragment_number])
     q.join()
+
+def main():
+    global db
+    global prov_url
+    logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.INFO)
+    parser = optparse.OptionParser()
+    parser.add_option('-t', '--target_db',
+        help="Target database URL. Default is {}.".format(DEFAULT_DB),
+        default=DEFAULT_DB)
+    parser.add_option('-n', '--num_worker_threads',
+        help="Number of worker threads. Default is {}.".format(DEFAULT_WORKER_THREADS),
+        type=int,
+        default=DEFAULT_WORKER_THREADS)
+    parser.add_option('-p', '--provenance_url',
+        help='Provenance URL.',
+        default='')
+    options, files = parser.parse_args()
+    db = couchdbkit.Database(options.target_db)
+    prov_url = options.provenance_url
+
+    logging.info("Start loading into '{}'".format(db.uri))
+    time_started = rdflib.Literal(datetime.datetime.utcnow())
+    logging.info("Start time: {}".format(time_started))
+    load_nt(files, num_worker_threads=options.num_worker_threads)
     time_ended = rdflib.Literal(datetime.datetime.utcnow())
     logging.info("End time: {}".format(time_ended))
     logging.info("Loading complete")
