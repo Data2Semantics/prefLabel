@@ -43,7 +43,8 @@ def nt_fragments(input_lines=fileinput.input()):
 
 def jsonify(ntriples):
     g = rdflib.Graph()
-    g.parse(data=ntriples, format='nt')
+    # rdflib N-Triples parser does not support utf-8 strings yet, using 'turtle' helps. 
+    g.parse(data=ntriples, format='turtle')
     docs = []
     for s in set(g.subjects()):
         doc = {"_id": s}
