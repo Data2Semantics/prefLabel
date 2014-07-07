@@ -1,9 +1,9 @@
 [
 {"from": "api/v1/labels", "method": "POST", "to": "_list/labels/_all_docs", "query": { "include_docs": "true", "limit":"1000" }},
-{"from": "api/v1/label/:uri", "to": "_list/label/by_uri", "query": {"include_docs": "true", "key": ":uri", "stale": "update_after"}},
+{"from": "api/v1/label/:uri", "to": "_list/label/by_uri", "query": {"include_docs": "true", "reduce": "false", "key": ":uri", "stale": "update_after"}},
 {"from": "api/v1/lookup/:lang/:label", "to": "_view/lookup", "query": {"key": [":lang", ":label"]}},
 {"from": "api/*", "to": "api/v1/*"},
-{"from": "meta/count", "to": "_list/value/count"},
+{"from": "meta/count", "to": "_list/value/by_uri", "query": {"stale": "update_after", "reduce": "true"}},
 {"from": "ld/prov/*", "to": "_show/prov/prov/*"},
 {"from": "css/*", "to": "css/*"},
 {"from": "img/*", "to": "img/*"},

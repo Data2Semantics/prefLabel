@@ -1,1 +1,0 @@
-../by_uri/map.js
