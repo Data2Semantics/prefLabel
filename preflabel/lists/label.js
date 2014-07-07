@@ -5,14 +5,17 @@ function(head, req) {
       var label = '';
       var lang = '';
       var labels = (row.doc || {}).labels;
+      var provLink = '';
       if (labels) {
         for (var i=0; i<languageList.length; i++) {
           lang = languageList[i];
           label = labels[lang];
           if (label) {
-            return { 'label': label,
-                     'lang': lang,
-                     'prov': (row.doc.prov || '') };
+            if (row.doc.prov) {
+              provLink = "http://preflabel.org/ld/prov/" + row.doc.prov +
+                "; rel='http://www.w3.org/ns/prov#has_provenance'; anchor='http://preflabel.org/ld/dummy";
+            }
+            return {'label': label, 'lang': lang, 'prov': provLink};
           }
         }
       }
@@ -31,19 +34,18 @@ function(head, req) {
 
   result = searchLabel(langs);
   if (result) {
-    var provLink = result.prov + "; rel='http://www.w3.org/ns/prov#has_provenance'";
     if (req.headers['Accept'].match(/json/)) {
       start({'headers': {
         'Content-Type': 'application/json',
         'Content-Language': result.lang,
-        'Link': provLink }});
+        'Link': result.prov }});
       send(JSON.stringify({
         'label': result.label,
         'lang': result.lang }));
     } else {
       start({'headers': { 'Content-Type': 'text/plain',
                           'Content-Language': result.lang,
-                          'Link': provLink }});
+                          'Link': result.prov }});
       send(result.label);
     }
   } else if (req.query.silent) {
