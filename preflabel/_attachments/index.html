@@ -48,20 +48,22 @@
               </h1>
             </div>
             <h4 class="text-muted">Example</h4>
-            <div class="input-group">
-              <input type="text" class="form-control" id="textURI" ng-model="textURI" ng-attr-placeholder="{{exampleURI}}" autofocus>
-              <span class="input-group-btn">
-                <button class="btn btn-primary" type="button" ng-click="getLabel()">Get Label</button>
-              </span>
-            </div>
-            <div class="form-group">
-              <label class="radio-inline">
-                <input type="radio" name="acceptRadio" ng-model="acceptHeader" value="application/json" checked>JSON
-              </label>
-              <label class="radio-inline">
-                <input type="radio" name="acceptRadio" ng-model="acceptHeader" value="text/plain">Text
-              </label>
-            </div>
+            <form ng-submit="getLabel()">
+              <div class="input-group">
+                <input type="text" class="form-control" id="textURI" ng-model="textURI" ng-attr-placeholder="{{exampleURI}}" autofocus>
+                <span class="input-group-btn">
+                  <button class="btn btn-primary" type="button" ng-click="getLabel()">Get Label</button>
+                </span>
+              </div>
+              <div class="form-group">
+                <label class="radio-inline">
+                  <input type="radio" name="acceptRadio" ng-model="acceptHeader" value="application/json" checked>JSON
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="acceptRadio" ng-model="acceptHeader" value="text/plain">Text
+                </label>
+              </div>
+            </form>
             <div class="panel panel-info">
               <div class="panel-heading">
                 <h3 class="panel-title">
@@ -85,6 +87,12 @@
               <div class="panel-body">
                 <div>
                   <em>Content-Type:</em> {{responseContentType}}
+                </div>
+                <div>
+                  <em>Content-Language:</em> {{responseContentLanguage}}
+                </div>
+                <div>
+                  <em>Link:</em> {{responseLink}}
                 </div>
                 <div>
                   <em>Data:</em> <strong>{{responseData}}</strong>
@@ -129,6 +137,8 @@
         success(function (data, status, headers, config) {
           $scope.responseStatus = ' - ' + status;
           $scope.responseContentType = headers()['content-type'];
+          $scope.responseContentLanguage = headers()['content-language'];
+          $scope.responseLink = headers()['link'];
           $scope.responseData = data;
         }).
         error(function (data, status, headers, config) {

@@ -1,0 +1,8 @@
+{
+   "_id": "http://www.example.com/2",
+   "prov": "0-example",
+   "labels": {
+       "ru": "_ тест",
+       "en": "_ test"
+   }
+}

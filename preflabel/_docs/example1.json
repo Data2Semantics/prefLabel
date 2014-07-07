@@ -1,0 +1,12 @@
+{
+  "_id": "000_example_doc",
+  "labels": {
+    "ru": "_ тест",
+    "en": "_ test"
+  },
+  "prov": "0-example",
+  "sameAs": [
+    "http://www.example.com/1",
+    "http://www.example.com/2"
+  ]
+}
