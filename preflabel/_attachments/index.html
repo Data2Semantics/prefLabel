@@ -89,6 +89,12 @@
                   <em>Content-Type:</em> {{responseContentType}}
                 </div>
                 <div>
+                  <em>Content-Language:</em> {{responseContentLanguage}}
+                </div>
+                <div>
+                  <em>Link:</em> {{responseLink}}
+                </div>
+                <div>
                   <em>Data:</em> <strong>{{responseData}}</strong>
                 </div>
               </div>
@@ -131,6 +137,8 @@
         success(function (data, status, headers, config) {
           $scope.responseStatus = ' - ' + status;
           $scope.responseContentType = headers()['content-type'];
+          $scope.responseContentLanguage = headers()['content-language'];
+          $scope.responseLink = headers()['link'];
           $scope.responseData = data;
         }).
         error(function (data, status, headers, config) {
