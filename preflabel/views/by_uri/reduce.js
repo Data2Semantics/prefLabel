@@ -1,5 +1,4 @@
 function(keys, values, rereduce) {
-  log(keys);
   if (rereduce) {
     return sum(values);
   } else {
