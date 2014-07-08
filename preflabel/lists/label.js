@@ -13,7 +13,8 @@ function(head, req) {
           if (label) {
             if (row.doc.prov) {
               provLink = "http://preflabel.org/ld/prov/" + row.doc.prov +
-                "; rel='http://www.w3.org/ns/prov#has_provenance'; anchor='http://preflabel.org/ld/dummy";
+                "; rel='http://www.w3.org/ns/prov#has_provenance';" +
+                " anchor='http://preflabel.org/ld/dummy" + "'";
             }
             return {'label': label, 'lang': lang, 'prov': provLink};
           }
@@ -49,11 +50,10 @@ function(head, req) {
       send(result.label);
     }
   } else if (req.query.silent) {
-    start({'code': 204});
-    send('');
+    start({'code': 204, 'headers': {'Content-Type': 'application/json'}});
+    send(JSON.stringify({'error': 'not_found', 'reason': 'no data for <' + req.query.key + '>'}));
   } else {
-    start({'code': 404});
-    send('');
+    start({'code': 404, 'headers': {'Content-Type': 'application/json'}});
+    send(JSON.stringify({'error': 'not_found', 'reason': 'no data for <' + req.query.key + '>'}));
   }
 }
-
