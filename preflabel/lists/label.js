@@ -29,9 +29,8 @@ function(head, req) {
     req.headers['Accept-Language'].toLowerCase().split(',').forEach( function (el, i, array) {
       langs[i] = el.trimLeft().slice(0,2); 
     });
-  } else {
-    langs[0] = 'en';
-  };
+  }
+  langs.push('en');
 
   result = searchLabel(langs);
   if (result) {

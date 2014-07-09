@@ -22,8 +22,8 @@
 
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
   <![endif]-->
   <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -47,7 +47,11 @@
                 prefLabel <small>Fast RDF entity label lookup</small>
               </h1>
             </div>
-            <h4 class="text-muted">Example</h4>
+            <p class="lead">Linked Data resources come with a human-readable label, and if this is the only information your application needs, you can make your life easier by using this HTTP API instead of URI dereferencing and public SPARQL endpoints. Hey, we already have multilingual labels for <strong>{{numEntities}}</strong> RDF entities!</p>
+
+<!--             <p>http://rdf.freebase.com/ns/m.01vyty</p>
+ -->
+            <!-- <h4 class="text-muted">Try It:</h4> -->
             <form ng-submit="getLabel()">
               <div class="input-group">
                 <input type="text" class="form-control" id="textURI" ng-model="textURI" ng-attr-placeholder="{{exampleURI}}" autofocus>
@@ -64,41 +68,83 @@
                 </label>
               </div>
             </form>
-            <div class="panel panel-info">
-              <div class="panel-heading">
-                <h3 class="panel-title">
-                  Request
-                </h3>
-              </div>
+            <div class="panel{{prefLabelResponse.status ? (prefLabelResponse.status===200 ? ' panel-primary' : ' panel-danger') : ' panel-default'}}">
               <div class="panel-body">
-                <strong>GET</strong> http://preflabel.org/api/v1/label/{{encodedURI()}}
-                <div>
-                  <em>Accept:</em> {{acceptHeader}}
+                <strong>GET</strong> http://preflabel.org/api/v1/label/{{encodedURI()}}<br>
+                <em>Accept:</em> {{acceptHeader}}
+              </div>
+              <div class="panel-footer{{prefLabelResponse.status ? '' : ' hidden'}}">
+                <em>HTTP/1.1 {{prefLabelResponse.status}}</em><br>
+                <em>Content-Type:</em> {{prefLabelResponse.headers["content-type"]}}<br>
+                <div class="{{prefLabelResponse.status===200 ? '' : 'hidden'}}">
+                  <em>Content-Language:</em> {{prefLabelResponse.headers["content-language"]}}<br>
+                  <em>Link:</em> {{prefLabelResponse.headers["link"]}}<br>
                 </div>
+                <strong>{{prefLabelResponse.data}}</strong><br>
               </div>
             </div>
 
+<!-- 
+            <div class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                Dropdown <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" role="menu">
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+              </ul>
+            </div>
+ -->
+            <h3>API Reference</h3>
+
+            <h4 class="text-muted">Basic call</h4>
+            <p>Returns a single plain text label given a URL-encoded entity URI.</p>
             <div class="panel panel-default">
-              <div class="panel-heading">
-                <h3 class="panel-title">
-                  Response {{responseStatus}}
-                </h3>
-              </div>
               <div class="panel-body">
-                <div>
-                  <em>Content-Type:</em> {{responseContentType}}
-                </div>
-                <div>
-                  <em>Content-Language:</em> {{responseContentLanguage}}
-                </div>
-                <div>
-                  <em>Link:</em> {{responseLink}}
-                </div>
-                <div>
-                  <em>Data:</em> <strong>{{responseData}}</strong>
-                </div>
+                <strong>GET</strong> <code>/api/v1/label/{url-encoded-uri}</code><br>
+              </div>
+              <div class="panel-footer">
+                <em>HTTP/1.1 200 OK</em><br>
+                <em>Content-Type:</em> text/plain<br>
+                <strong>label text</strong>
               </div>
             </div>
+
+            <h4 class="text-muted">Missing URI's</h4>
+            <p>Use query parameter <code>?silent=true</code> if you prefer HTTP code 204 over the default HTTP code 404 for unknown entities.</p>
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <strong>GET</strong> <code>/api/v1/label/{url-encoded-uri}?silent=true</code><br>
+              </div>
+              <div class="panel-footer">
+                <em>HTTP/1.1 204 No Content</em><br>
+                <em>Content-Type:</em> application/json<br>
+                <strong>{"error":"not_found","reason":"no data for &lt;uri&gt;"}</strong>
+              </div>
+            </div>
+
+            <h4 class="text-muted">Content-Type negotiation</h4>
+            <p>To get JSON instead of the default plain text label send <code>Accept: application/json</code> header with the request.</p>
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <strong>GET</strong> <code>/api/v1/label/{url-encoded-uri}</code><br>
+                Accept: application/json
+              </div>
+              <div class="panel-footer">
+                <em>HTTP/1.1 200 OK</em><br>
+                <em>Content-Type:</em> application/json<br>
+                <strong>{"label":"label text","lang":"en"}</strong>
+              </div>
+            </div>
+            <p>The returned structure contains a label and a two-letter language code.</p>
+
+            <h4 class="text-muted">Content-Language negotiation</h4>
+            <p>Label lookup honors the the language preferences provided in the <code>Accept-Language</code> header with
+            <code>en</code> implicitly appended to the end of the list. Use the <code>Content-Language</code> response
+            header or the <code>lang</code> propery of the JSON response to get the language of the result.</p>
+
+            <h3>Data Sources</h3>
+            <p>Enumerate the main sources loaded by default.</p>
 
           </div>
         </div>
@@ -120,8 +166,17 @@
 
   <script type="text/javascript">
     function LabelCtrl($scope, $http) {
+      $scope.prefLabelResponse = {};
       $scope.acceptHeader = "application/json";
       $scope.exampleURI = "http://www.wikidata.org/entity/P103";
+      $http.get('./meta/count').
+      success(function (data, status, headers, config) {
+        $scope.numEntities = data;
+      }).
+      error(function (data, status, headers, config) {
+        $scope.numEntities = '';
+      });
+
       $scope.encodedURI = function() {
         if ($scope.textURI) {
           return encodeURIComponent($scope.textURI);
@@ -132,19 +187,20 @@
           $scope.textURI = $scope.exampleURI;
         };
         $http.get('./api/v1/label/' + $scope.encodedURI(),
-        // $http.get('http://localhost:8000/api/label/' + $scope.encodedURI(),
           {'headers': {'Accept': $scope.acceptHeader}}).
-        success(function (data, status, headers, config) {
-          $scope.responseStatus = ' - ' + status;
-          $scope.responseContentType = headers()['content-type'];
-          $scope.responseContentLanguage = headers()['content-language'];
-          $scope.responseLink = headers()['link'];
-          $scope.responseData = data;
+        success(function (data, status, headers, config, statusText) {
+          $scope.prefLabelResponse = {
+            "status": status,
+            "headers": headers(),
+            "data": data
+          };
         }).
-        error(function (data, status, headers, config) {
-          $scope.responseStatus = ' - ' + status;
-          $scope.responseContentType = headers()['content-type'];
-          $scope.responseData = data;
+        error(function (data, status, headers, config, statusText) {
+          $scope.prefLabelResponse = {
+            "status": status,
+            "headers": headers(),
+            "data": data,
+          };
         });
       };
     }
