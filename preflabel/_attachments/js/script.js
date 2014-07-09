@@ -1,4 +1,8 @@
-function LabelCtrl($scope, $http) {
+'use strict';
+
+var prefLabelApp = angular.module('prefLabelApp', ['ui.bootstrap']);
+
+prefLabelApp.controller('LabelCtrl', ['$scope', '$http', function LabelCtrl($scope, $http) {
   $scope.prefLabelResponse = {};
   $scope.acceptHeader = "application/json";
   $scope.exampleURI = "http://www.wikidata.org/entity/P103";
@@ -36,4 +40,4 @@ function LabelCtrl($scope, $http) {
       };
     });
   };
-}
+}]);
