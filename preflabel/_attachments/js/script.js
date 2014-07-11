@@ -2,8 +2,8 @@
 
 var prefLabelApp = angular.module('prefLabelApp', ['ui.bootstrap']);
 
-prefLabelApp.controller('LabelCtrl', ['$scope', '$http', function LabelCtrl($scope, $http) {
-  $scope.prefLabelResponse = {};
+prefLabelApp.controller('FormCtrl', ['$scope', '$http', function ($scope, $http) {
+  $scope.lastResponse = {};
   $scope.acceptHeader = "application/json";
   $scope.exampleURI = "http://www.wikidata.org/entity/P103";
   $http.get('./meta/count').
@@ -26,14 +26,14 @@ prefLabelApp.controller('LabelCtrl', ['$scope', '$http', function LabelCtrl($sco
     $http.get('./api/v1/label/' + $scope.encodedURI(),
       {'headers': {'Accept': $scope.acceptHeader}}).
     success(function (data, status, headers, config, statusText) {
-      $scope.prefLabelResponse = {
+      $scope.lastResponse = {
         "status": status,
         "headers": headers(),
         "data": data
       };
     }).
     error(function (data, status, headers, config, statusText) {
-      $scope.prefLabelResponse = {
+      $scope.lastResponse = {
         "status": status,
         "headers": headers(),
         "data": data,

@@ -33,8 +33,8 @@
 <body>
   <!-- Wrap all page content here -->
   <div id="wrap">
+
     <div class="container">
-      <div ng-controller="LabelCtrl">
         <div class="row clearfix">
           <div class="col-md-12 column">
             <div class="page-header">
@@ -44,107 +44,23 @@
             </div>
             <p class="lead">Linked Data resources come with a human-readable label, and if this is the only information your application needs, you can make your life easier by using this HTTP API instead of URI dereferencing and public SPARQL endpoints. Hey, we already have multilingual labels for <strong>{{numEntities}}</strong> RDF entities!</p>
 
-<!--             <p>http://rdf.freebase.com/ns/m.01vyty</p>
- -->
-            <!-- <h4 class="text-muted">Try It:</h4> -->
-            <form ng-submit="getLabel()">
-              <div class="input-group">
-                <input type="text" class="form-control" id="textURI" ng-model="textURI" ng-attr-placeholder="{{exampleURI}}" autofocus>
-                <span class="input-group-btn">
-                  <button class="btn btn-primary" type="button" ng-click="getLabel()">Get Label</button>
-                </span>
-              </div>
-              <div class="form-group">
-                <label class="radio-inline">
-                  <input type="radio" name="acceptRadio" ng-model="acceptHeader" value="application/json" checked>JSON
-                </label>
-                <label class="radio-inline">
-                  <input type="radio" name="acceptRadio" ng-model="acceptHeader" value="text/plain">Text
-                </label>
-              </div>
-            </form>
-            <div id="request-panel" class="panel{{prefLabelResponse.status ? (prefLabelResponse.status===200 ? ' panel-primary' : ' panel-danger') : ' panel-default'}}">
-              <div class="panel-body">
-                <strong>GET</strong> http://preflabel.org/api/v1/label/{{encodedURI()}}<br>
-                <em>Accept:</em> {{acceptHeader}}
-              </div>
-              <div class="panel-footer{{prefLabelResponse.status ? '' : ' hidden'}}">
-                <em>HTTP/1.1 {{prefLabelResponse.status}}</em><br>
-                <em>Content-Type:</em> {{prefLabelResponse.headers["content-type"]}}<br>
-                <div class="{{prefLabelResponse.status===200 ? '' : 'hidden'}}">
-                  <em>Content-Language:</em> {{prefLabelResponse.headers["content-language"]}}<br>
-                  <em>Link:</em> {{prefLabelResponse.headers["link"]}}<br>
-                </div>
-                <strong>{{prefLabelResponse.data}}</strong><br>
-              </div>
-            </div>
-
-            <div>
-              <accordion close-others="true">
-                <accordion-group>
-                  <accordion-heading>
-                    <h3>API Reference</h3>
-                  </accordion-heading>
-
-                  <h4 class="text-muted">Basic call</h4>
-                  <p>Returns a single plain text label given a URL-encoded entity URI.</p>
-                  <div class="panel panel-default">
-                    <div class="panel-body">
-                      <strong>GET</strong> <code>/api/v1/label/{url-encoded-uri}</code><br>
-                    </div>
-                    <div class="panel-footer">
-                      <em>HTTP/1.1 200 OK</em><br>
-                      <em>Content-Type:</em> text/plain<br>
-                      <strong>label text</strong>
-                    </div>
-                  </div>
-
-                  <h4 class="text-muted">Missing URI's</h4>
-                  <p>Use query parameter <code>?silent=true</code> if you prefer HTTP code 204 over the default HTTP code 404 for unknown entities.</p>
-                  <div class="panel panel-default">
-                    <div class="panel-body">
-                      <strong>GET</strong> <code>/api/v1/label/{url-encoded-uri}?silent=true</code><br>
-                    </div>
-                    <div class="panel-footer">
-                      <em>HTTP/1.1 204 No Content</em><br>
-                      <em>Content-Type:</em> application/json<br>
-                      <strong>{"error":"not_found","reason":"no data for &lt;uri&gt;"}</strong>
-                    </div>
-                  </div>
-
-                  <h4 class="text-muted">Content-Type negotiation</h4>
-                  <p>To get JSON instead of the default plain text label send <code>Accept: application/json</code> header with the request.</p>
-                  <div class="panel panel-default">
-                    <div class="panel-body">
-                      <strong>GET</strong> <code>/api/v1/label/{url-encoded-uri}</code><br>
-                      Accept: application/json
-                    </div>
-                    <div class="panel-footer">
-                      <em>HTTP/1.1 200 OK</em><br>
-                      <em>Content-Type:</em> application/json<br>
-                      <strong>{"label":"label text","lang":"en"}</strong>
-                    </div>
-                  </div>
-                  <p>The returned structure contains a label and a two-letter language code.</p>
-                  <h4 class="text-muted">Content-Language negotiation</h4>
-                  <p>Label lookup honors the the language preferences provided in the <code>Accept-Language</code> header with
-                  <code>en</code> implicitly appended to the end of the list. Use the <code>Content-Language</code> response
-                  header or the <code>lang</code> propery of the JSON response to get the language of the result.</p>
-                </accordion-group>
-                <accordion-group>
-                  <accordion-heading>
-                    <h3>Data Sources</h3>
-                  </accordion-heading>
-                  <p>Enumerate the main sources loaded by default.</p>
-                </accordion-group>
-              </accordion>
-            </div> <!-- /AccordionCtrlr -->
-
-
+            <div ng-include src="'partials/form.html'"></div>
+            <accordion close-others="true">
+              <accordion-group>
+                <accordion-heading>
+                  <h3>API Reference</h3>
+                </accordion-heading>
+                <div ng-include src="'partials/reference.html'"></div>
+              </accordion-group>
+              <accordion-group>
+                <accordion-heading>
+                  <h3>Data Sources</h3>
+                </accordion-heading>
+                <div ng-include src="'partials/data.html'"></div>
+              </accordion-group>
+            </accordion>
           </div>
         </div>
-      </div> <!-- /LabelCtrlr -->
-
     </div> <!-- /container -->
   </div> <!-- /wrap -->
 

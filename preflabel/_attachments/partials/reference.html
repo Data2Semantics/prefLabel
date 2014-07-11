@@ -1,0 +1,44 @@
+<h4 class="text-muted">Basic call</h4>
+<p>Returns a single plain text label given a URL-encoded entity URI.</p>
+<div class="panel panel-default">
+  <div class="panel-body">
+    <strong>GET</strong> <code>/api/v1/label/{url-encoded-uri}</code><br>
+  </div>
+  <div class="panel-footer">
+    <em>HTTP/1.1 200 OK</em><br>
+    <em>Content-Type:</em> text/plain<br>
+    <strong>label text</strong>
+  </div>
+</div>
+
+<h4 class="text-muted">Missing URI's</h4>
+<p>Use query parameter <code>?silent=true</code> if you prefer HTTP code 204 over the default HTTP code 404 for unknown entities.</p>
+<div class="panel panel-default">
+  <div class="panel-body">
+    <strong>GET</strong> <code>/api/v1/label/{url-encoded-uri}?silent=true</code><br>
+  </div>
+  <div class="panel-footer">
+    <em>HTTP/1.1 204 No Content</em><br>
+    <em>Content-Type:</em> application/json<br>
+    <strong>{"error":"not_found","reason":"no data for &lt;uri&gt;"}</strong>
+  </div>
+</div>
+
+<h4 class="text-muted">Content-Type negotiation</h4>
+<p>To get JSON instead of the default plain text label send <code>Accept: application/json</code> header with the request.</p>
+<div class="panel panel-default">
+  <div class="panel-body">
+    <strong>GET</strong> <code>/api/v1/label/{url-encoded-uri}</code><br>
+    Accept: application/json
+  </div>
+  <div class="panel-footer">
+    <em>HTTP/1.1 200 OK</em><br>
+    <em>Content-Type:</em> application/json<br>
+    <strong>{"label":"label text","lang":"en"}</strong>
+  </div>
+</div>
+<p>The returned structure contains a label and a two-letter language code.</p>
+<h4 class="text-muted">Content-Language negotiation</h4>
+<p>Label lookup honors the the language preferences provided in the <code>Accept-Language</code> header with
+  <code>en</code> implicitly appended to the end of the list. Use the <code>Content-Language</code> response
+  header or the <code>lang</code> propery of the JSON response to get the language of the result.</p>

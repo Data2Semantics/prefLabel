@@ -1,0 +1,33 @@
+<div ng-controller="FormCtrl">
+  <form ng-submit="getLabel()">
+    <div class="input-group">
+      <input type="text" class="form-control" id="textURI" ng-model="textURI" ng-attr-placeholder="{{exampleURI}}" autofocus>
+      <span class="input-group-btn">
+        <button class="btn btn-primary" type="button" ng-click="getLabel()">Get Label</button>
+      </span>
+    </div>
+    <div class="form-group">
+      <label class="radio-inline">
+        <input type="radio" name="acceptRadio" ng-model="acceptHeader" value="application/json" checked>JSON
+      </label>
+      <label class="radio-inline">
+        <input type="radio" name="acceptRadio" ng-model="acceptHeader" value="text/plain">Text
+      </label>
+    </div>
+  </form>
+  <div id="request-panel" class="panel{{lastResponse.status ? (lastResponse.status===200 ? ' panel-primary' : ' panel-danger') : ' panel-default'}}">
+    <div class="panel-body">
+      <strong>GET</strong> http://preflabel.org/api/v1/label/{{encodedURI()}}<br>
+      <em>Accept:</em> {{acceptHeader}}
+    </div>
+    <div class="panel-footer{{lastResponse.status ? '' : ' hidden'}}">
+      <em>HTTP/1.1 {{lastResponse.status}}</em><br>
+      <em>Content-Type:</em> {{lastResponse.headers["content-type"]}}<br>
+      <div class="{{lastResponse.status===200 ? '' : 'hidden'}}">
+        <em>Content-Language:</em> {{lastResponse.headers["content-language"]}}<br>
+        <em>Link:</em> {{lastResponse.headers["link"]}}<br>
+      </div>
+      <strong>{{lastResponse.data}}</strong><br>
+    </div>
+  </div>
+</div> <!-- /LabelCtrlr -->

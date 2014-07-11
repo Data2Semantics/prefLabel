@@ -8,6 +8,7 @@
 {"from": "css/*", "to": "css/*"},
 {"from": "img/*", "to": "img/*"},
 {"from": "js/*", "to": "js/*"},
+{"from": "partials/*", "to": "partials/*"},
 {"from": "", "to": "index.html"},
 {"from": "robots.txt", "to": "robots.txt"}
 ]
