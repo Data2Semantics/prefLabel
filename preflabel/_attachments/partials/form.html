@@ -5,7 +5,7 @@
       <span class="input-group-btn">
         <button class="btn btn-primary" type="button" ng-click="getLabel()">Get Label</button>
       </span>
-    </div>
+    </div><br>
     <div class="form-group">
       <label class="radio-inline">
         <input type="radio" name="acceptRadio" ng-model="acceptHeader" value="application/json" checked>JSON
@@ -15,6 +15,7 @@
       </label>
     </div>
   </form>
+
   <div id="request-panel" class="panel{{lastResponse.status ? (lastResponse.status===200 ? ' panel-primary' : ' panel-danger') : ' panel-default'}}">
     <div class="panel-body">
       <strong>GET</strong> http://preflabel.org/api/v1/label/{{encodedURI()}}<br>

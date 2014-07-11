@@ -8,9 +8,7 @@
   <meta name="description" content="Fast RDF entity label lookup">
   <meta name="author" content="Marat Charlaganov">
   <!-- <link rel="shortcut icon" href="../../docs-assets/ico/favicon.png"> -->
-
   <title>prefLabel.org</title>
-
   <!-- Bootstrap core CSS -->
   <link href="./css/bootstrap.yeti.min.css" rel="stylesheet">
   <!-- <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> -->
@@ -33,36 +31,33 @@
 <body ng-controller="MainCtrl">
   <!-- Wrap all page content here -->
   <div id="wrap">
-
     <div class="container">
-        <div class="row clearfix">
-          <div class="col-md-12 column">
-            <div class="page-header">
-              <h1>
-                prefLabel <small>Fast RDF entity label lookup</small>
-              </h1>
-            </div>
-
-            <div ng-include src="'partials/form.html'"></div>
-            <accordion close-others="true">
-              <accordion-group>
-                <accordion-heading>
-                  <h3>API Reference</h3>
-                </accordion-heading>
-                <div ng-include src="'partials/reference.html'"></div>
-              </accordion-group>
-              <accordion-group>
-                <accordion-heading>
-                  <h3>Data Sources</h3>
-                </accordion-heading>
-                <div ng-include src="'partials/data.html'"></div>
-              </accordion-group>
-            </accordion>
+      <div class="row clearfix">
+        <div class="col-md-12 column">
+          <div class="page-header">
+            <h1>
+              prefLabel <small><strong>Fast RDF entity label lookup</strong></small>
+            </h1>
           </div>
+          <p class="lead">
+            Human-readable labels for <strong>{{numEntities}}</strong> Linked Data Cloud resources in one place. 
+            The HTTP API returns one label per requested URI in the language of your choice. What can be simpler?
+          </p>
+          <div ng-include src="'partials/form.html'"></div>
+          <accordion close-others="true">
+            <accordion-group>
+              <accordion-heading><h3>API Reference</h3></accordion-heading>
+              <div ng-include src="'partials/reference.html'"></div>
+            </accordion-group>
+            <accordion-group>
+              <accordion-heading><h3>Data Sources</h3></accordion-heading>
+              <div ng-include src="'partials/data.html'"></div>
+            </accordion-group>
+          </accordion>
         </div>
+      </div>
     </div> <!-- /container -->
   </div> <!-- /wrap -->
-
   <div id="footer">
     <div class="container">
       <div class="pull-right">
