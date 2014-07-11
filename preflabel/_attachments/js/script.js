@@ -2,10 +2,7 @@
 
 var prefLabelApp = angular.module('prefLabelApp', ['ui.bootstrap']);
 
-prefLabelApp.controller('FormCtrl', ['$scope', '$http', function ($scope, $http) {
-  $scope.lastResponse = {};
-  $scope.acceptHeader = "application/json";
-  $scope.exampleURI = "http://www.wikidata.org/entity/P103";
+prefLabelApp.controller('MainCtrl', ['$scope', '$http', function ($scope, $http) {
   $http.get('./meta/count').
   success(function (data, status, headers, config) {
     $scope.numEntities = data;
@@ -13,7 +10,12 @@ prefLabelApp.controller('FormCtrl', ['$scope', '$http', function ($scope, $http)
   error(function (data, status, headers, config) {
     $scope.numEntities = '';
   });
+}]);
 
+prefLabelApp.controller('FormCtrl', ['$scope', '$http', function ($scope, $http) {
+  $scope.lastResponse = {};
+  $scope.acceptHeader = "application/json";
+  $scope.exampleURI = "http://www.wikidata.org/entity/P103";
   $scope.encodedURI = function() {
     if ($scope.textURI) {
       return encodeURIComponent($scope.textURI);

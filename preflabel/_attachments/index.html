@@ -30,7 +30,7 @@
     ga('send', 'pageview');
   </script>
 </head>
-<body>
+<body ng-controller="MainCtrl">
   <!-- Wrap all page content here -->
   <div id="wrap">
 
@@ -42,7 +42,6 @@
                 prefLabel <small>Fast RDF entity label lookup</small>
               </h1>
             </div>
-            <p class="lead">Linked Data resources come with a human-readable label, and if this is the only information your application needs, you can make your life easier by using this HTTP API instead of URI dereferencing and public SPARQL endpoints. Hey, we already have multilingual labels for <strong>{{numEntities}}</strong> RDF entities!</p>
 
             <div ng-include src="'partials/form.html'"></div>
             <accordion close-others="true">
