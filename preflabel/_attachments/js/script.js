@@ -30,6 +30,7 @@ prefLabelApp.controller('FormCtrl', ['$scope', '$http', function ($scope, $http)
     success(function (data, status, headers, config, statusText) {
       $scope.lastResponse = {
         "status": status,
+        "ok": (status == 200),
         "headers": headers(),
         "data": data
       };
@@ -37,6 +38,7 @@ prefLabelApp.controller('FormCtrl', ['$scope', '$http', function ($scope, $http)
     error(function (data, status, headers, config, statusText) {
       $scope.lastResponse = {
         "status": status,
+        "ok": false,
         "headers": headers(),
         "data": data,
       };

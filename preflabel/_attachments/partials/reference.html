@@ -42,3 +42,12 @@
 <p>Label lookup honors the the language preferences provided in the <code>Accept-Language</code> header with
   <code>en</code> implicitly appended to the end of the list. Use the <code>Content-Language</code> response
   header or the <code>lang</code> propery of the JSON response to get the language of the result.</p>
+<h4 class="text-muted">Provenance</h4>
+<p>Response headers contain a link to the provenance information expressed using W3C PROV-O and serialized as JSON-LD.</p>
+<div class="panel panel-default">
+  <div class="panel-footer">
+    <em>HTTP/1.1 200 OK</em><br>
+    <em>Link:</em>  http://preflabel.org/ld/prov/example.json; rel='http://www.w3.org/ns/prov#has_provenance'; anchor='http://preflabel.org/ld/entity'<br>
+    <strong>label text</strong>
+  </div>
+</div>
