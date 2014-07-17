@@ -14,7 +14,7 @@ function(head, req) {
             if (row.doc.prov) {
               provLink = "http://preflabel.org/ld/prov/" + row.doc.prov +
                 "; rel='http://www.w3.org/ns/prov#has_provenance';" +
-                " anchor='http://preflabel.org/ld/dummy" + "'";
+                " anchor='http://preflabel.org/ld/entity" + "'";
             }
             return {'label': label, 'lang': lang, 'prov': provLink};
           }
