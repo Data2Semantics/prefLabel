@@ -2,16 +2,6 @@
 
 var prefLabelApp = angular.module('prefLabelApp', ['ui.bootstrap']);
 
-prefLabelApp.controller('MainCtrl', ['$scope', '$http', function ($scope, $http) {
-  $http.get('./meta/count').
-  success(function (data, status, headers, config) {
-    $scope.numEntities = data;
-  }).
-  error(function (data, status, headers, config) {
-    $scope.numEntities = '';
-  });
-}]);
-
 prefLabelApp.controller('FormCtrl', ['$scope', '$http', function ($scope, $http) {
   $scope.lastResponse = {};
   $scope.acceptHeader = "application/json";
