@@ -14,7 +14,6 @@ while read -r line; do
     if [[ ${#unquoted} -eq 32 ]]; then
 	#validate string length. this way, we exclude e.g. the variable name at the first row as well
 	curl -s $DOWNLOAD_URL/$unquoted | gzip -dcf | grep "http://www.w3.org/2000/01/rdf-schema#label" | sort -u -S 1G - | python2.7 "$SCRIPT_DIR/loader.py" & >> "$LOG";
-	break;
     fi
 done <<EOF
 < "$hashes"
