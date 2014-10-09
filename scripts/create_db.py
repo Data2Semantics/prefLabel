@@ -1,4 +1,8 @@
 #!/usr/bin/env python2.7
+
+# Preferred method of initializing the db is:
+# couchapp push ../preflabel http://localhost:5984/preflabel
+
 import couchdbkit
 import restkit
 import sys
@@ -11,4 +15,4 @@ else:
 dbname = 'preflabel'
 server = couchdbkit.Server(filters=filters)
 db = server.get_or_create_db(dbname)
-push('./_design/index', db)
+push('../preflabel', db)
