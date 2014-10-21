@@ -1,10 +1,8 @@
 #!/usr/bin/env python2.7
 
 import datetime
-import sys
 import optparse
 import fileinput
-import json
 import logging
 import threading
 import Queue
@@ -20,12 +18,14 @@ prov_url = ''
 db = None
 q = None
 
+
 def nt_subj(nt_line):
     tokens = nt_line.split()
     if (len(tokens) > 2) and (tokens[0][0] == '<'):
         return tokens[0]
     else:
         return None
+
 
 def nt_fragments(input_lines=fileinput.input()):
     chunk = []
@@ -41,15 +41,18 @@ def nt_fragments(input_lines=fileinput.input()):
         chunk.append(line)
     yield (''.join(chunk)).strip()
 
+
 def jsonify(ntriples):
     g = rdflib.Graph()
-    # rdflib N-Triples parser does not support utf-8 strings yet, using 'turtle' helps. 
+    # rdflib N-Triples parser does not support utf-8 strings yet, using 'turtle' helps.
     g.parse(data=ntriples, format='turtle')
     docs = []
     for s in set(g.subjects()):
         doc = {"_id": s}
-        labels = { o.language or DEFAULT_LANGUAGE: unicode(o)
-                    for o in g.objects(subject=s, predicate=RDFS['label']) }
+        labels = {
+            o.language or DEFAULT_LANGUAGE: unicode(o)
+            for o in g.objects(subject=s, predicate=RDFS['label'])
+            if isinstance(o, rdflib.Literal)}
         if labels:
             doc["labels"] = labels
             doc["prov"] = prov_url
@@ -58,6 +61,7 @@ def jsonify(ntriples):
                 doc["sameAs"] = sameAs
             docs.append(doc)
     return docs
+
 
 def worker():
     while True:
@@ -68,15 +72,17 @@ def worker():
             logging.error("While processing fragment #{}: {}".format(fragment_number, e))
         q.task_done()
 
+
 def start_workers(num_worker_threads):
     for i in range(num_worker_threads):
         t = threading.Thread(target=worker)
         t.daemon = True
         t.start()
 
+
 def load_nt(files, num_worker_threads=DEFAULT_WORKER_THREADS):
     global q
-    q = Queue.Queue(maxsize=2*num_worker_threads)
+    q = Queue.Queue(maxsize=num_worker_threads*2)
     logging.debug("Loader params: num_worker_threads={}, min_chunk_size={}".format(
         num_worker_threads, min_chunk_size))
     start_workers(num_worker_threads)
@@ -84,19 +90,23 @@ def load_nt(files, num_worker_threads=DEFAULT_WORKER_THREADS):
         q.put([fragment, fragment_number])
     q.join()
 
+
 def main():
     global db
     global prov_url
     logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.INFO)
     parser = optparse.OptionParser()
-    parser.add_option('-t', '--target_db',
+    parser.add_option(
+        '-t', '--target_db',
         help="Target database URL. Default is {}.".format(DEFAULT_DB),
         default=DEFAULT_DB)
-    parser.add_option('-n', '--num_worker_threads',
+    parser.add_option(
+        '-n', '--num_worker_threads',
         help="Number of worker threads. Default is {}.".format(DEFAULT_WORKER_THREADS),
         type=int,
         default=DEFAULT_WORKER_THREADS)
-    parser.add_option('-p', '--provenance_url',
+    parser.add_option(
+        '-p', '--provenance_url',
         help='Provenance URL.',
         default='')
     options, files = parser.parse_args()
