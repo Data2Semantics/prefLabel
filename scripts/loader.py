@@ -42,12 +42,23 @@ def nt_fragments(input_lines=fileinput.input()):
     yield (''.join(chunk)).strip()
 
 
-def jsonify(ntriples):
+def uri_filter(term):
+    return isinstance(term, rdflib.URIRef)
+
+
+def domain_filter(url, domain):
+    """Return True if the second level domani of the url matches domain"""
+    domain = '.'.join(url.split('/')[2] .split('.')[-2:])
+    return term_domain == domain
+
+
+def jsonify(ntriples, subject_filter=uri_filter):
     g = rdflib.Graph()
     # rdflib N-Triples parser does not support utf-8 strings yet, using 'turtle' helps.
     g.parse(data=ntriples, format='turtle')
     docs = []
-    for s in set(g.subjects()):
+    subjects = {s for s in g.subjects() if subject_filter(s)}
+    for s in subjects:
         doc = {"_id": s}
         labels = {
             o.language or DEFAULT_LANGUAGE: unicode(o)
