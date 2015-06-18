@@ -1,1 +1,2 @@
-curl -X GET -s -H "Accept: application/n-triples" "http://lov.okfn.org/endpoint/lov_aggregator?query=PREFIX%20rdfs%3A%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%20CONSTRUCT%20%7B%3Fs%20rdfs%3Alabel%20%3Fl%7D%20WHERE%20%7B%3Fs%20%20rdfs%3Alabel%20%3Fl%20FILTER(isiRI(%3Fs)%20%26%26%20isLiteral(%3Fl))%7D&format=N3" | rapper -i turtle -o ntriples - http://example.com | sort -uS 20M | bzip2 > sorted_lov-`date "+%Y-%m-%d"`.nt.bz2 
+#!/bin/bash
+curl -X GET -s "http://lov.okfn.org/lov.nq.gz" | gzip -dcf | grep "http://www.w3.org/2000/01/rdf-schema#label" | rapper -i nquads -o ntriples -I example.com - | sort -u - | bzip2 > sorted_lov-`date "+%Y-%m-%d"`.nt.bz2
