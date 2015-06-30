@@ -11,7 +11,8 @@ EXCLUDED_DOMAINS = set([
     'geonames.org',
     'dbpedia.org',
     'freebase.com',
-    'wikidata.org'])
+    'wikidata.org',
+    'uni-mannheim.de'])
 
 num_worker_threads = 4
 target_dir = 'laundromat_labels'
@@ -59,6 +60,7 @@ def datasets_info():
     {
     ?maybearchive llo:url ?downloadURL; llo:containsEntry* ?dataset .
     ?dataset llo:md5 ?md5; llo:triples ?nTriples .
+    filter(?nTriples>0)
     }
     '''
     query_results = sparql_query(
