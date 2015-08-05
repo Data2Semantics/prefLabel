@@ -24,6 +24,14 @@ function(head, req) {
     return null;
   }
 
+  function toXML (result) {
+    return '<?xml version="1.0" encoding="utf-8" ?>\n' +
+      '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" >\n' +
+      '<rdf:Description rdf:about="' + req.query.uri + '">\n' +
+      '<rdfs:label xml:lang="' + result.lang + '">' + result.label + '</rdfs:label>\n' +
+      '</rdf:Description>\n</rdf:RDF>\n'
+  }
+
   var langs = [];
   if ('Accept-Language' in req.headers) {
     req.headers['Accept-Language'].toLowerCase().split(',').forEach( function (el, i, array) {
@@ -42,6 +50,11 @@ function(head, req) {
       send(JSON.stringify({
         'label': result.label,
         'lang': result.lang }));
+    } else if (req.headers['Accept'].match(/^application\/rdf\+xml/)) {
+      start({'headers': { 'Content-Type': 'application/rdf+xml',
+                          'Content-Language': result.lang,
+                          'Link': result.prov }});
+      send(toXML(result));
     } else {
       start({'headers': { 'Content-Type': 'text/plain',
                           'Content-Language': result.lang,
