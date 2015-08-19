@@ -4,8 +4,7 @@ import datetime
 import optparse
 import fileinput
 import logging
-import threading
-import Queue
+import multiprocessing
 import couchdbkit
 import rdflib
 from rdflib.namespace import RDFS, OWL
@@ -27,7 +26,7 @@ def nt_subj(nt_line):
         return None
 
 
-def nt_fragments(input_lines=fileinput.input()):
+def nt_fragments(input_lines):
     chunk = []
     last_subj = None
     for line in input_lines:
@@ -48,7 +47,7 @@ def uri_filter(term):
 
 def domain_filter(url, domain):
     """Return True if the second level domani of the url matches domain"""
-    domain = '.'.join(url.split('/')[2] .split('.')[-2:])
+    term_domain = '.'.join(url.split('/')[2] .split('.')[-2:])
     return term_domain == domain
 
 
@@ -67,9 +66,9 @@ def jsonify(ntriples, subject_filter=uri_filter):
         if labels:
             doc["labels"] = labels
             doc["prov"] = prov_url
-            sameAs = list(g.objects(subject=s, predicate=OWL['sameAs']))
-            if sameAs:
-                doc["sameAs"] = sameAs
+            same_as = list(g.objects(subject=s, predicate=OWL['sameAs']))
+            if same_as:
+                doc["sameAs"] = same_as
             docs.append(doc)
     return docs
 
@@ -86,18 +85,19 @@ def worker():
 
 def start_workers(num_worker_threads):
     for i in range(num_worker_threads):
-        t = threading.Thread(target=worker)
+        t = multiprocessing.Process(target=worker)
         t.daemon = True
         t.start()
 
 
 def load_nt(files, num_worker_threads=DEFAULT_WORKER_THREADS):
     global q
-    q = Queue.Queue(maxsize=num_worker_threads*2)
-    logging.debug("Loader params: num_worker_threads={}, min_chunk_size={}".format(
+    q = multiprocessing.JoinableQueue(maxsize=num_worker_threads * 4)
+    logging.debug("Using num_worker_threads={}, min_chunk_size={}".format(
         num_worker_threads, min_chunk_size))
     start_workers(num_worker_threads)
-    for fragment_number, fragment in enumerate(nt_fragments(fileinput.input(files))):
+    chunked_input = nt_fragments(fileinput.input(files, bufsize=2048 * 1024))
+    for fragment_number, fragment in enumerate(chunked_input):
         q.put([fragment, fragment_number])
     q.join()
 
